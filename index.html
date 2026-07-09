@@ -55,6 +55,11 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .ball:hover{transform:translateY(-3px) scale(1.05)}
 .ball.sm{width:34px;height:34px;font-size:13px}
 .plus{font-weight:800;color:var(--txt3);font-size:18px;padding:0 2px}
+.ball.spin{animation:ballspin .28s ease-in-out infinite}
+@keyframes ballspin{0%,100%{transform:translateY(-2px) scale(.94)}50%{transform:translateY(2px) scale(1.04)}}
+.ball.settle{animation:ballsettle .42s cubic-bezier(.2,1.5,.4,1)}
+@keyframes ballsettle{0%{transform:scale(.5)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
+button:disabled{opacity:.55;cursor:default}
 @media(max-width:480px){
   .wrap{padding:22px 14px 60px}
   .card{padding:16px}
@@ -312,10 +317,22 @@ function renderDailyMsg(){
   document.getElementById('dailyMsg').textContent=PINNED[today]||MSGS[Math.floor(rng()*MSGS.length)];
 }
 
-function renderSets(){
+// 로또 추첨처럼 숫자가 돌아가다가 멈추는 애니메이션
+function spinBall(el,finalN,stopDelay){
+  el.classList.add('spin');
+  const iv=setInterval(()=>{const r=1+Math.floor(Math.random()*45);el.textContent=r;el.style.background=ballColor(r);},55);
+  setTimeout(()=>{
+    clearInterval(iv);
+    el.textContent=finalN;el.style.background=ballColor(finalN);
+    el.classList.remove('spin');el.classList.add('settle');
+    setTimeout(()=>el.classList.remove('settle'),420);
+  },stopDelay);
+}
+function renderSets(animate){
   const seedBase=todayStr()+'#'+nonce;
   const card=document.getElementById('setcard');
   card.innerHTML='';
+  const anims=[];
   for(let c=0;c<5;c++){
     const rng=hashStr(seedBase+':'+c);
     const nums=pickSet(c,rng);
@@ -326,7 +343,7 @@ function renderSets(){
     tag.innerHTML='<b>'+CATS[c].t+'</b><span class="desc">'+CATS[c].d+'</span>';
     const balls=document.createElement('div');
     balls.className='balls';
-    nums.forEach(n=>balls.appendChild(makeBall(n)));
+    nums.forEach((n,j)=>{const b=makeBall(n);balls.appendChild(b);if(animate)anims.push({el:b,n:n,col:j,row:c});});
     const save=document.createElement('button');
     save.className='savebtn';
     setSaveBtn(save,nums);
@@ -337,6 +354,13 @@ function renderSets(){
     });
     row.appendChild(tag); row.appendChild(balls); row.appendChild(save);
     card.appendChild(row);
+  }
+  if(animate && anims.length){
+    let maxDelay=0;
+    anims.forEach(a=>{const d=500+a.col*130+a.row*60;if(d>maxDelay)maxDelay=d;spinBall(a.el,a.n,d);});
+    const rb=document.getElementById('reroll'), rd=document.getElementById('resetdaily');
+    if(rb)rb.disabled=true; if(rd)rd.disabled=true;
+    setTimeout(()=>{if(rb)rb.disabled=false;if(rd)rd.disabled=false;},maxDelay+450);
   }
 }
 
@@ -353,7 +377,7 @@ function renderLatest(){
   document.getElementById('foot').innerHTML='데이터 출처: 동행복권 공식 추첨결과(1~'+LOTTO_DATA.latestDraw+'회) · smok95/lotto, lottolyzer.com 집계 · 최신 회차 '+LOTTO_DATA.latestDraw+'회 반영';
 }
 
-document.getElementById('reroll').addEventListener('click',()=>{nonce++;renderSets();});
+document.getElementById('reroll').addEventListener('click',()=>{nonce++;renderSets(true);});
 document.getElementById('resetdaily').addEventListener('click',()=>{nonce=0;renderSets();});
 
 // ---- 지난주 기본 세트 성적표 ----
