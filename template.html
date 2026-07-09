@@ -43,10 +43,11 @@ h1{font-size:clamp(30px,7vw,44px);font-weight:800;line-height:1.12;letter-spacin
 h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 5s linear infinite}
 @keyframes shine{to{background-position:200% center}}
 .sub{color:var(--txt2);font-size:14px;margin:0 0 22px;max-width:52ch}
-.latest{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;padding-top:20px;border-top:1px solid var(--stroke)}
-.latest .meta{font-size:12.5px;color:var(--txt2)}
-.latest .meta b{display:block;color:var(--txt);font-size:20px;font-weight:800;letter-spacing:-.5px;margin-top:3px}
-.latest .meta .ldate{display:inline-block;color:var(--a1);font-size:12px;font-weight:700;margin-top:4px}
+.latest{padding-top:18px;border-top:1px solid var(--stroke)}
+.lhead{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:13px}
+.ltag{font-size:13px;font-weight:700;color:var(--txt2)}
+.lround{font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(100deg,var(--a1),var(--a2));padding:3px 11px;border-radius:999px;letter-spacing:-.2px}
+.ldate{font-size:12px;font-weight:700;color:var(--txt3);margin-left:auto}
 
 /* balls */
 .balls{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
@@ -151,7 +152,11 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     <h1>리미의 로또 <span class="grad">1등 기원</span> 🍀</h1>
     <div class="sub">1회~<span id="ld"></span>회 실제 당첨 데이터 기반 통계 추천. 재미로 보는 오늘의 행운 번호.</div>
     <div class="latest">
-      <div class="meta">지난주 당첨번호<br><b id="ldno"></b><br><span class="ldate" id="ldate"></span></div>
+      <div class="lhead">
+        <span class="ltag">지난주 당첨번호</span>
+        <span class="lround" id="ldno"></span>
+        <span class="ldate" id="ldate"></span>
+      </div>
       <div class="balls" id="latestballs"></div>
     </div>
   </div>
