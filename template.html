@@ -58,14 +58,18 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   .wrap{padding:22px 14px 60px}
   .card{padding:16px}
   .hero{padding:24px 20px}
-  .setrow{padding:12px 4px;gap:10px}
+  .setrow{padding:14px 2px;gap:10px}
   .tag{min-width:100%}
   .balls{gap:6px}
   .ball{width:38px;height:38px;font-size:14px}
+  /* 추천 세트: 6개 번호를 화면 폭에 꽉 차게 균등 확대 */
+  .setrow .balls{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;justify-items:center}
+  .setrow .ball{width:100%;height:auto;aspect-ratio:1;max-width:56px;font-size:clamp(15px,4.4vw,19px)}
 }
 @media(max-width:360px){
-  .balls{gap:5px}
   .ball{width:34px;height:34px;font-size:13px}
+  .setrow .balls{gap:6px}
+  .setrow .ball{font-size:15px}
 }
 
 /* bento stats */
