@@ -70,6 +70,9 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   /* 추천 세트: 6개 번호를 화면 폭에 꽉 차게 균등 확대 */
   .setrow .balls{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;justify-items:center}
   .setrow .ball{width:100%;height:auto;aspect-ratio:1;max-width:56px;font-size:clamp(15px,4.4vw,19px)}
+  /* 자주/적게 나온 번호 TOP·BOTTOM 7: 7개를 한 줄에 균등 배치 */
+  .hc .balls{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:100%;justify-items:center}
+  .hc .balls .ball{width:100%;height:auto;aspect-ratio:1;max-width:44px;font-size:clamp(12px,3.4vw,15px)}
 }
 @media(max-width:360px){
   .ball{width:34px;height:34px;font-size:13px}
