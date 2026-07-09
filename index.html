@@ -231,7 +231,12 @@ const CATS=[
 let nonce=0;
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-// 오늘의 한마디 (날짜별로 고정 순환)
+// 오늘의 한마디
+// PINNED: 특정 날짜에 직접 지정한 문구 (지정한 날은 아래 문구가 우선 표시됨)
+const PINNED={
+  '2026-07-09':'이은금여사님 1등되서 래미안 사러갑시다'
+};
+// 지정하지 않은 날은 아래 문구가 날짜별로 자동 순환
 const MSGS=[
   '당신의 1등을 응원합니다',
   '오늘의 행운이 당신과 함께하길',
@@ -242,8 +247,9 @@ const MSGS=[
   '이번 주, 인생 역전의 주인공은 바로 당신'
 ];
 function renderDailyMsg(){
-  const rng=hashStr('msg:'+todayStr());
-  document.getElementById('dailyMsg').textContent=MSGS[Math.floor(rng()*MSGS.length)];
+  const today=todayStr();
+  const rng=hashStr('msg:'+today);
+  document.getElementById('dailyMsg').textContent=PINNED[today]||MSGS[Math.floor(rng()*MSGS.length)];
 }
 
 function renderSets(){
