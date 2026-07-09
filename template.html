@@ -109,6 +109,19 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .tag{min-width:132px;font-size:14px;font-weight:700}
 .tag .desc{display:block;font-size:11px;font-weight:500;color:var(--txt3);margin-top:3px}
 .c0 .tag b{color:#ffb15c}.c1 .tag b{color:#5cc8ff}.c2 .tag b{color:#b79bff}.c3 .tag b{color:#4fe0a5}.c4 .tag b{color:#aab3ce}
+/* 저장 버튼 */
+.savebtn{margin-left:auto;flex:0 0 auto;align-self:center;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);border-radius:10px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap}
+.savebtn:hover{border-color:var(--stroke2);color:var(--txt)}
+.savebtn.on{background:linear-gradient(100deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
+/* 저장 목록 */
+.saved-item{display:flex;align-items:center;gap:12px;padding:12px 4px}
+.saved-item+.saved-item{border-top:1px solid var(--stroke)}
+.saved-main{flex:1;min-width:0}
+.saved-main .ball{width:30px;height:30px;font-size:12px}
+.saved-meta{font-size:11px;color:var(--txt3);margin-top:6px}
+.delbtn{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:transparent;border:1px solid var(--stroke);color:var(--txt3);font-size:13px;line-height:1;padding:0;cursor:pointer;transition:all .15s}
+.delbtn:hover{color:#e24b4a;border-color:#e24b4a}
+.saved-empty{font-size:13px;color:var(--txt3);text-align:center;padding:10px 4px}
 
 /* buttons */
 .btnrow{display:flex;gap:11px;flex-wrap:wrap;margin:10px 0 18px}
@@ -175,6 +188,9 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
   </div>
   <div class="card" id="setcard"></div>
   <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.</div>
+
+  <div class="sectitle">⭐ <span>내가 저장한 번호</span> <span class="datepill" id="savedCount"></span></div>
+  <div class="card" id="savedCard"></div>
 
   <div class="sectitle">📈 <span>지난주 기본 세트 성적표</span></div>
   <div class="card scorecard">
@@ -312,7 +328,14 @@ function renderSets(){
     const balls=document.createElement('div');
     balls.className='balls';
     nums.forEach(n=>balls.appendChild(makeBall(n)));
-    row.appendChild(tag); row.appendChild(balls);
+    const save=document.createElement('button');
+    save.className='savebtn';
+    setSaveBtn(save,nums);
+    save.addEventListener('click',()=>{
+      if(isSaved(nums)) removeSaved(nums.join(',')); else saveSet(nums,CATS[c].t);
+      setSaveBtn(save,nums); renderSaved();
+    });
+    row.appendChild(tag); row.appendChild(balls); row.appendChild(save);
     card.appendChild(row);
   }
 }
@@ -413,7 +436,36 @@ function renderScore(){
   });
 }
 
-renderLatest();renderDailyMsg();renderSets();renderBars();renderScore();
+// ---- 내가 저장한 번호 (브라우저 localStorage) ----
+const LS_KEY='savedLottoSets';
+function loadSaved(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[];}catch(e){return [];}}
+function storeSaved(a){try{localStorage.setItem(LS_KEY,JSON.stringify(a));}catch(e){}}
+function isSaved(nums){const k=nums.join(',');return loadSaved().some(s=>s.nums.join(',')===k);}
+function saveSet(nums,label){const a=loadSaved();const k=nums.join(',');if(a.some(s=>s.nums.join(',')===k))return;a.unshift({nums:nums.slice(),label:label||'',date:todayStr()});storeSaved(a);}
+function removeSaved(k){storeSaved(loadSaved().filter(s=>s.nums.join(',')!==k));}
+function setSaveBtn(btn,nums){const on=isSaved(nums);btn.classList.toggle('on',on);btn.textContent=on?'★ 저장됨':'☆ 저장';}
+function renderSaved(){
+  const list=loadSaved();
+  document.getElementById('savedCount').textContent=list.length+'개';
+  const card=document.getElementById('savedCard');
+  if(!list.length){card.innerHTML='<div class="saved-empty">아직 저장한 번호가 없어요. 마음에 드는 세트의 ‘☆ 저장’을 눌러보세요.</div>';return;}
+  card.innerHTML='';
+  list.forEach(s=>{
+    const item=document.createElement('div');item.className='saved-item';
+    const main=document.createElement('div');main.className='saved-main';
+    const balls=document.createElement('div');balls.className='balls';
+    s.nums.forEach(n=>balls.appendChild(makeBall(n,true)));
+    const meta=document.createElement('div');meta.className='saved-meta';
+    meta.textContent=(s.date?s.date.slice(5).replace('-','.')+' 저장':'')+(s.label?(' · '+s.label):'');
+    main.appendChild(balls);main.appendChild(meta);
+    const del=document.createElement('button');del.className='delbtn';del.textContent='✕';del.title='삭제';
+    del.addEventListener('click',()=>{removeSaved(s.nums.join(','));renderSaved();renderSets();});
+    item.appendChild(main);item.appendChild(del);
+    card.appendChild(item);
+  });
+}
+
+renderLatest();renderDailyMsg();renderSets();renderBars();renderScore();renderSaved();
 </script>
 </body>
 </html>
