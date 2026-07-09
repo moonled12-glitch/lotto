@@ -70,9 +70,6 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   /* 추천 세트: 6개 번호를 화면 폭에 꽉 차게 균등 확대 */
   .setrow .balls{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;justify-items:center}
   .setrow .ball{width:100%;height:auto;aspect-ratio:1;max-width:56px;font-size:clamp(15px,4.4vw,19px)}
-  /* 자주/적게 나온 번호 TOP·BOTTOM 7: 7개를 한 줄에 균등 배치 */
-  .hc .balls{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;width:100%;justify-items:center}
-  .hc .balls .ball{width:100%;height:auto;aspect-ratio:1;max-width:44px;font-size:clamp(12px,3.4vw,15px)}
 }
 @media(max-width:360px){
   .ball{width:34px;height:34px;font-size:13px}
@@ -124,6 +121,26 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .saved-empty{font-size:13px;color:var(--txt3);text-align:center;padding:10px 4px}
 .saved-hint{font-size:12.5px;font-weight:600;color:#c0392b;text-align:center;margin:-6px 0 10px;display:none}
 .saved-hint.show{display:block}
+/* 댓글 */
+.cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.cmt-name,.cmt-text{width:100%;font:inherit;color:var(--txt);background:var(--glass2);border:1px solid var(--stroke);border-radius:12px;padding:11px 13px}
+.cmt-name{font-size:13px}
+.cmt-text{font-size:14px;min-height:74px;resize:vertical;line-height:1.5}
+.cmt-name::placeholder,.cmt-text::placeholder{color:var(--txt3)}
+.cmt-name:focus,.cmt-text:focus{outline:none;border-color:var(--a1)}
+.cmt-actions{display:flex;align-items:center;gap:10px}
+.cmt-hint{font-size:11.5px;color:var(--txt3)}
+.cmt-submit{margin-left:auto;padding:10px 20px}
+.cmt-list{margin-top:6px}
+.cmt{padding:13px 4px}
+.cmt+.cmt{border-top:1px solid var(--stroke)}
+.cmt-head{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.cmt-author{font-size:13px;font-weight:700;color:var(--txt)}
+.cmt-time{font-size:11px;color:var(--txt3)}
+.cmt-del{margin-left:auto;background:transparent;border:none;color:var(--txt3);font-size:11.5px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.cmt-del:hover{color:#e24b4a}
+.cmt-body{font-size:14px;color:var(--txt);line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.cmt-empty{font-size:13px;color:var(--txt3);text-align:center;padding:12px 4px}
 
 /* buttons */
 .btnrow{display:flex;gap:11px;flex-wrap:wrap;margin:10px 0 18px}
@@ -134,27 +151,6 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
 .ghost{background:var(--glass2);color:var(--txt);border:1px solid var(--stroke)}
 .ghost:hover{background:rgba(255,255,255,.11);border-color:var(--stroke2)}
 .note{font-size:12px;color:var(--txt3);margin-top:12px;line-height:1.65}
-
-/* tabs */
-.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.tab{padding:8px 15px;border-radius:999px;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.tab:hover{color:var(--txt);border-color:var(--stroke2)}
-.tab.active{background:linear-gradient(100deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
-
-/* frequency chart */
-.bars{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
-.bcell{text-align:center}
-.bwrap{height:82px;display:flex;align-items:flex-end;justify-content:center}
-.bar{width:62%;border-radius:6px 6px 0 0;transition:height .55s cubic-bezier(.2,.8,.2,1)}
-.bnum{font-size:11px;color:var(--txt2);margin-top:5px}
-.bnum .n{display:inline-flex;width:21px;height:21px;border-radius:50%;color:#14151d;align-items:center;justify-content:center;font-size:10px;font-weight:800}
-.bcnt{font-size:10px;color:var(--txt3);margin-top:1px}
-
-/* hot / cold */
-.hotcold{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
-@media(max-width:560px){.hotcold{grid-template-columns:1fr}}
-.hc{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:15px}
-.hc h4{margin:0 0 11px;font-size:13px;font-weight:600;color:var(--txt2)}
 
 /* disclaimer / footer */
 .disc{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);color:#946012;border-radius:18px;padding:15px 17px;font-size:12.5px;margin-top:22px;line-height:1.65}
@@ -207,24 +203,23 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     <div class="note" id="scNote"></div>
   </div>
 
-  <div class="sectitle">📊 <span>번호 출현 빈도</span></div>
-  <div class="card">
-    <div class="tabs">
-      <div class="tab active" data-k="f1y">최근 1년 (52회)</div>
-      <div class="tab" data-k="f5y">최근 5년 (260회)</div>
-      <div class="tab" data-k="fall">전체 기간 (1231회)</div>
-    </div>
-    <div class="bars" id="bars"></div>
-    <div class="hotcold">
-      <div class="hc"><h4>🔥 자주 나온 번호 TOP 7</h4><div class="balls" id="hot"></div></div>
-      <div class="hc"><h4>❄️ 적게 나온 번호 BOTTOM 7</h4><div class="balls" id="cold"></div></div>
-    </div>
-    <div class="note" id="statnote"></div>
-  </div>
-
   <div class="disc">
     ⚠️ 로또는 매 회차 완전히 독립적인 무작위 추첨입니다. 과거 통계가 미래 당첨을 보장하지 않으며, 이 페이지는 <b>재미와 참고용</b>입니다. 구매는 본인 판단과 책임 하에, 즐길 수 있는 범위에서만 하세요.
   </div>
+
+  <div class="sectitle">💬 <span>댓글</span> <span class="datepill" id="cmtCount"></span></div>
+  <div class="card">
+    <form id="cmtForm" class="cmt-form" autocomplete="off">
+      <input id="cmtName" class="cmt-name" maxlength="12" placeholder="닉네임 (선택)">
+      <textarea id="cmtText" class="cmt-text" maxlength="200" placeholder="댓글을 남겨보세요 (최대 200자)" required></textarea>
+      <div class="cmt-actions">
+        <span class="cmt-hint">최근 30개만 유지 · 오래된 댓글은 자동 삭제</span>
+        <button type="submit" class="primary cmt-submit">등록</button>
+      </div>
+    </form>
+    <div class="cmt-list" id="cmtList"></div>
+  </div>
+
   <div class="foot" id="foot"></div>
 </div>
 
@@ -357,42 +352,6 @@ function renderLatest(){
   document.getElementById('foot').innerHTML='데이터 출처: 동행복권 공식 추첨결과(1~'+LOTTO_DATA.latestDraw+'회) · smok95/lotto, lottolyzer.com 집계 · 최신 회차 '+LOTTO_DATA.latestDraw+'회 반영';
 }
 
-// frequency chart
-let curKey='f1y';
-function renderBars(){
-  const arr=LOTTO_DATA[curKey];
-  const max=Math.max(...arr);
-  const wrap=document.getElementById('bars');
-  wrap.innerHTML='';
-  for(let n=1;n<=45;n++){
-    const cell=document.createElement('div');cell.className='bcell';
-    const bw=document.createElement('div');bw.className='bwrap';
-    const bar=document.createElement('div');bar.className='bar';
-    bar.style.height=Math.round(arr[n-1]/max*78)+'px';
-    bar.style.background=ballColor(n);
-    bw.appendChild(bar);
-    const nm=document.createElement('div');nm.className='bnum';
-    const dot=document.createElement('span');dot.className='n';dot.style.background=ballColor(n);dot.textContent=n;
-    nm.appendChild(dot);
-    const cnt=document.createElement('div');cnt.className='bcnt';cnt.textContent=arr[n-1];
-    cell.appendChild(bw);cell.appendChild(nm);cell.appendChild(cnt);
-    wrap.appendChild(cell);
-  }
-  const idx=arr.map((v,i)=>[i+1,v]);
-  const hot=idx.slice().sort((a,b)=>b[1]-a[1]).slice(0,7);
-  const cold=idx.slice().sort((a,b)=>a[1]-b[1]).slice(0,7);
-  const hb=document.getElementById('hot');hb.innerHTML='';
-  hot.forEach(([n,v])=>{const el=makeBall(n,true);el.title=v+'회';hb.appendChild(el);});
-  const cb=document.getElementById('cold');cb.innerHTML='';
-  cold.forEach(([n,v])=>{const el=makeBall(n,true);el.title=v+'회';cb.appendChild(el);});
-  const labels={f1y:'최근 1년(52회)',f5y:'최근 5년(260회)',fall:'전체 기간(1231회)'};
-  document.getElementById('statnote').textContent=labels[curKey]+' 기준 각 번호의 출현 횟수입니다. 막대에 마우스를 올리면 상세 횟수를 볼 수 있어요.';
-}
-
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');curKey=t.dataset.k;renderBars();
-}));
 document.getElementById('reroll').addEventListener('click',()=>{nonce++;renderSets();});
 document.getElementById('resetdaily').addEventListener('click',()=>{nonce=0;renderSets();});
 
@@ -471,7 +430,49 @@ function renderSaved(){
   });
 }
 
-renderLatest();renderDailyMsg();renderSets();renderBars();renderScore();renderSaved();
+// ---- 댓글 (브라우저 localStorage, 최대 30개 · 오래된 것 자동 삭제) ----
+const CMT_KEY='lottoComments';
+const CMT_MAX=30;
+function loadCmts(){try{return JSON.parse(localStorage.getItem(CMT_KEY))||[];}catch(e){return [];}}
+function storeCmts(a){try{localStorage.setItem(CMT_KEY,JSON.stringify(a));}catch(e){}}
+function cmtNow(){const d=new Date();const p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
+function addCmt(name,text){
+  let a=loadCmts();
+  a.unshift({name:(name||'').trim().slice(0,12), text:text.trim().slice(0,200), t:cmtNow(), id:(a[0]?a[0].id+1:1)});
+  if(a.length>CMT_MAX) a=a.slice(0,CMT_MAX);   // 오래된(뒤쪽) 댓글 자동 삭제
+  storeCmts(a);
+}
+function delCmt(id){storeCmts(loadCmts().filter(c=>c.id!==id));}
+function renderComments(){
+  const list=loadCmts();
+  document.getElementById('cmtCount').textContent=list.length+' / '+CMT_MAX;
+  const box=document.getElementById('cmtList');
+  if(!list.length){box.innerHTML='<div class="cmt-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</div>';return;}
+  box.innerHTML='';
+  list.forEach(c=>{
+    const el=document.createElement('div');el.className='cmt';
+    const head=document.createElement('div');head.className='cmt-head';
+    const au=document.createElement('span');au.className='cmt-author';au.textContent=c.name||'익명';
+    const tm=document.createElement('span');tm.className='cmt-time';tm.textContent=c.t||'';
+    const del=document.createElement('button');del.className='cmt-del';del.textContent='삭제';del.title='삭제';
+    del.addEventListener('click',()=>{delCmt(c.id);renderComments();});
+    head.appendChild(au);head.appendChild(tm);head.appendChild(del);
+    const body=document.createElement('div');body.className='cmt-body';body.textContent=c.text;
+    el.appendChild(head);el.appendChild(body);
+    box.appendChild(el);
+  });
+}
+document.getElementById('cmtForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  const nameEl=document.getElementById('cmtName'), textEl=document.getElementById('cmtText');
+  const text=textEl.value.trim();
+  if(!text) return;
+  addCmt(nameEl.value, text);
+  textEl.value=''; nameEl.value='';
+  renderComments();
+});
+
+renderLatest();renderDailyMsg();renderSets();renderScore();renderSaved();renderComments();
 </script>
 </body>
 </html>
