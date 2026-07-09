@@ -3,62 +3,129 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title> 리미의 매일매일 로또 번호 추천서비스(무료배포중)</title>
+<meta name="theme-color" content="#080b16">
+<title>리미의 로또 1등 기원</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
 <style>
-:root{color-scheme:light}
+:root{
+  --bg:#080b16;
+  --glass:rgba(255,255,255,.045);
+  --glass2:rgba(255,255,255,.075);
+  --stroke:rgba(255,255,255,.09);
+  --stroke2:rgba(255,255,255,.17);
+  --txt:#eaeefb;
+  --txt2:#a3adc9;
+  --txt3:#6e779a;
+  --a1:#8b7bff;
+  --a2:#38e0d8;
+  --a3:#ff74b1;
+  color-scheme:dark;
+}
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:#f4f6fb;color:#1c2333;line-height:1.55}
-.wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
-h1{font-size:24px;margin:4px 0 2px;letter-spacing:-.5px}
-.sub{color:#5b6577;font-size:13px;margin-bottom:18px}
-.card{background:#fff;border:1px solid #e6e9f0;border-radius:16px;padding:18px;margin-bottom:16px;box-shadow:0 1px 2px rgba(20,30,60,.04)}
-.latest{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
-.latest .meta{font-size:13px;color:#5b6577}
-.latest .meta b{color:#1c2333;font-size:15px}
-.balls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.ball{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;box-shadow:inset 0 -3px 6px rgba(0,0,0,.15)}
-.ball.sm{width:32px;height:32px;font-size:13px}
-.plus{font-weight:700;color:#9aa3b2;font-size:18px;padding:0 2px}
-.sectitle{font-size:17px;font-weight:700;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
-.setrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px dashed #eef0f5;flex-wrap:wrap}
-.setrow:last-child{border-bottom:none}
-.tag{min-width:120px;font-size:13px;font-weight:700}
-.tag .desc{display:block;font-size:11px;font-weight:500;color:#8a93a5;margin-top:2px}
-.c0 .tag b{color:#e8630a}.c1 .tag b{color:#1478d6}.c2 .tag b{color:#7a3ff0}.c3 .tag b{color:#0a9e6e}.c4 .tag b{color:#5b6577}
-.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-button{font:inherit;cursor:pointer;border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:14px}
-.primary{background:#2f6bff;color:#fff}
-.primary:active{transform:translateY(1px)}
-.ghost{background:#eef2fb;color:#2f4a8a}
-.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.tab{padding:7px 13px;border-radius:20px;background:#eef1f7;color:#5b6577;font-size:13px;font-weight:600}
-.tab.active{background:#1c2333;color:#fff}
-.bars{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}
+body{margin:0;font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(58% 50% at 12% -5%,rgba(139,123,255,.28),transparent 70%),
+  radial-gradient(52% 44% at 102% 12%,rgba(56,224,216,.20),transparent 70%),
+  radial-gradient(50% 50% at 82% 108%,rgba(255,116,177,.18),transparent 70%),
+  var(--bg)}
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px}
+
+/* glass card */
+.card{background:var(--glass);border:1px solid var(--stroke);border-radius:22px;padding:20px;margin-bottom:16px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);box-shadow:0 10px 34px rgba(0,0,0,.28)}
+
+/* hero */
+.hero{padding:30px 26px;position:relative;overflow:hidden}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--txt2);background:var(--glass2);border:1px solid var(--stroke);padding:6px 13px;border-radius:999px;margin-bottom:16px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--a2);box-shadow:0 0 8px var(--a2);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+h1{font-size:clamp(30px,7vw,44px);font-weight:800;line-height:1.12;letter-spacing:-1.4px;margin:0 0 10px}
+h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));background-size:200% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.sub{color:var(--txt2);font-size:14px;margin:0 0 22px;max-width:52ch}
+.latest{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;padding-top:20px;border-top:1px solid var(--stroke)}
+.latest .meta{font-size:12.5px;color:var(--txt2)}
+.latest .meta b{display:block;color:var(--txt);font-size:20px;font-weight:800;letter-spacing:-.5px;margin-top:3px}
+
+/* balls */
+.balls{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
+.ball{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#14151d;font-size:16px;box-shadow:0 5px 14px rgba(0,0,0,.4),inset 0 2px 4px rgba(255,255,255,.45),inset 0 -4px 7px rgba(0,0,0,.22);transition:transform .18s}
+.ball:hover{transform:translateY(-3px) scale(1.05)}
+.ball.sm{width:34px;height:34px;font-size:13px}
+.plus{font-weight:800;color:var(--txt3);font-size:18px;padding:0 2px}
+
+/* bento stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--glass);border:1px solid var(--stroke);border-radius:18px;padding:16px 18px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%)}
+.stat-k{font-size:12px;color:var(--txt2);margin-bottom:7px;font-weight:500}
+.stat-v{font-size:26px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(100deg,var(--a2),var(--a1));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+@media(max-width:480px){.stat{padding:13px 14px}.stat-v{font-size:20px}.stat-k{font-size:11px}}
+
+/* section title */
+.sectitle{font-size:19px;font-weight:700;margin:30px 6px 13px;display:flex;align-items:center;gap:9px;letter-spacing:-.5px}
+.datepill{font-size:12px;font-weight:700;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);border-radius:999px;padding:5px 13px;margin-left:auto}
+
+/* recommend set rows */
+.setrow{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
+.setrow+.setrow{margin-top:2px}
+.setrow:hover{background:var(--glass2)}
+.tag{min-width:132px;font-size:14px;font-weight:700}
+.tag .desc{display:block;font-size:11px;font-weight:500;color:var(--txt3);margin-top:3px}
+.c0 .tag b{color:#ffb15c}.c1 .tag b{color:#5cc8ff}.c2 .tag b{color:#b79bff}.c3 .tag b{color:#4fe0a5}.c4 .tag b{color:#aab3ce}
+
+/* buttons */
+.btnrow{display:flex;gap:11px;flex-wrap:wrap;margin-top:6px}
+button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 19px;font-weight:700;font-size:14px;transition:transform .13s ease,box-shadow .22s,background .2s}
+.primary{background:linear-gradient(100deg,var(--a1),var(--a2));color:#0a0c14;box-shadow:0 7px 22px rgba(56,224,216,.26)}
+.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(56,224,216,.36)}
+.primary:active{transform:translateY(0)}
+.ghost{background:var(--glass2);color:var(--txt);border:1px solid var(--stroke)}
+.ghost:hover{background:rgba(255,255,255,.11);border-color:var(--stroke2)}
+.note{font-size:12px;color:var(--txt3);margin-top:12px;line-height:1.65}
+
+/* tabs */
+.tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab{padding:8px 15px;border-radius:999px;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.tab:hover{color:var(--txt);border-color:var(--stroke2)}
+.tab.active{background:linear-gradient(100deg,var(--a1),var(--a2));color:#0a0c14;border-color:transparent}
+
+/* frequency chart */
+.bars{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
 .bcell{text-align:center}
-.bwrap{height:70px;display:flex;align-items:flex-end;justify-content:center}
-.bar{width:60%;border-radius:4px 4px 0 0;transition:height .4s}
-.bnum{font-size:11px;color:#5b6577;margin-top:3px}
-.bnum .n{display:inline-flex;width:20px;height:20px;border-radius:50%;color:#fff;align-items:center;justify-content:center;font-size:10px;font-weight:700}
-.bcnt{font-size:10px;color:#98a1b2}
-.hotcold{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px}
-.hc{flex:1;min-width:220px}
-.hc h4{margin:0 0 8px;font-size:13px}
-.note{font-size:12px;color:#8a93a5;margin-top:6px}
-.foot{font-size:12px;color:#98a1b2;margin-top:20px;line-height:1.7}
-.disc{background:#fff7ed;border:1px solid #ffe0b8;color:#8a5a13;border-radius:12px;padding:12px 14px;font-size:12.5px;margin-top:16px}
-.datepill{font-size:12px;background:#eef2fb;color:#2f4a8a;border-radius:20px;padding:4px 12px;font-weight:700}
+.bwrap{height:82px;display:flex;align-items:flex-end;justify-content:center}
+.bar{width:62%;border-radius:6px 6px 0 0;transition:height .55s cubic-bezier(.2,.8,.2,1)}
+.bnum{font-size:11px;color:var(--txt2);margin-top:5px}
+.bnum .n{display:inline-flex;width:21px;height:21px;border-radius:50%;color:#14151d;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.bcnt{font-size:10px;color:var(--txt3);margin-top:1px}
+
+/* hot / cold */
+.hotcold{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}
+@media(max-width:560px){.hotcold{grid-template-columns:1fr}}
+.hc{background:var(--glass2);border:1px solid var(--stroke);border-radius:16px;padding:15px}
+.hc h4{margin:0 0 11px;font-size:13px;font-weight:600;color:var(--txt2)}
+
+/* disclaimer / footer */
+.disc{background:rgba(255,180,80,.08);border:1px solid rgba(255,180,80,.22);color:#ecc089;border-radius:18px;padding:15px 17px;font-size:12.5px;margin-top:22px;line-height:1.65}
+.disc b{color:#ffd39c}
+.foot{font-size:12px;color:var(--txt3);margin-top:26px;line-height:1.75;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>리미의 로또 1등 기원</h1>
-  <div class="sub">동행복권 6/45 · 1회~<span id="ld"></span>회 실제 당첨 데이터 기반 통계 추천</div>
-
-  <div class="card">
+  <div class="card hero">
+    <div class="eyebrow"><span class="dot"></span>매일 자동 업데이트 · 동행복권 6/45</div>
+    <h1>리미의 로또 <span class="grad">1등 기원</span> 🍀</h1>
+    <div class="sub">1회~<span id="ld"></span>회 실제 당첨 데이터 기반 통계 추천. 재미로 보는 오늘의 행운 번호.</div>
     <div class="latest">
       <div class="meta">최신 당첨번호<br><b id="ldno"></b></div>
       <div class="balls" id="latestballs"></div>
     </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-k">최신 회차</div><div class="stat-v" id="stLatest">–</div></div>
+    <div class="stat"><div class="stat-k">누적 분석 회차</div><div class="stat-v" id="stTotal">–</div></div>
+    <div class="stat"><div class="stat-k">오늘의 추천</div><div class="stat-v">5세트</div></div>
   </div>
 
   <div class="sectitle">🎯 <span>오늘의 추천 5세트</span> <span class="datepill" id="today"></span></div>
@@ -183,6 +250,8 @@ function renderLatest(){
   const plus=document.createElement('span');plus.className='plus';plus.textContent='+';b.appendChild(plus);
   b.appendChild(makeBall(LOTTO_DATA.latestBonus));
   document.getElementById('today').textContent=todayStr();
+  document.getElementById('stLatest').textContent=LOTTO_DATA.latestDraw+'회';
+  document.getElementById('stTotal').textContent=(LOTTO_DATA.totalDraws||LOTTO_DATA.latestDraw).toLocaleString()+'회';
   document.getElementById('foot').innerHTML='데이터 출처: 동행복권 공식 추첨결과(1~'+LOTTO_DATA.latestDraw+'회) · smok95/lotto, lottolyzer.com 집계 · 최신 회차 '+LOTTO_DATA.latestDraw+'회 반영';
 }
 
@@ -197,7 +266,7 @@ function renderBars(){
     const cell=document.createElement('div');cell.className='bcell';
     const bw=document.createElement('div');bw.className='bwrap';
     const bar=document.createElement('div');bar.className='bar';
-    bar.style.height=Math.round(arr[n-1]/max*68)+'px';
+    bar.style.height=Math.round(arr[n-1]/max*78)+'px';
     bar.style.background=ballColor(n);
     bw.appendChild(bar);
     const nm=document.createElement('div');nm.className='bnum';
