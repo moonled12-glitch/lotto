@@ -46,6 +46,7 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .latest{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;padding-top:20px;border-top:1px solid var(--stroke)}
 .latest .meta{font-size:12.5px;color:var(--txt2)}
 .latest .meta b{display:block;color:var(--txt);font-size:20px;font-weight:800;letter-spacing:-.5px;margin-top:3px}
+.latest .meta .ldate{display:inline-block;color:var(--a1);font-size:12px;font-weight:700;margin-top:4px}
 
 /* balls */
 .balls{display:flex;flex-wrap:wrap;gap:9px;align-items:center}
@@ -135,7 +136,7 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     <h1>리미의 로또 <span class="grad">1등 기원</span> 🍀</h1>
     <div class="sub">1회~<span id="ld"></span>회 실제 당첨 데이터 기반 통계 추천. 재미로 보는 오늘의 행운 번호.</div>
     <div class="latest">
-      <div class="meta">최신 당첨번호<br><b id="ldno"></b></div>
+      <div class="meta">지난주 당첨번호<br><b id="ldno"></b><br><span class="ldate" id="ldate"></span></div>
       <div class="balls" id="latestballs"></div>
     </div>
   </div>
@@ -243,6 +244,8 @@ const CATS=[
 
 let nonce=0;
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// 로또 회차 → 추첨일 (1회=2002-12-07, 매주 토요일)
+function drawDate(n){const d=new Date(Date.UTC(2002,11,7)+(n-1)*604800000);const w=['일','월','화','수','목','금','토'][d.getUTCDay()];return d.getUTCFullYear()+'.'+String(d.getUTCMonth()+1).padStart(2,'0')+'.'+String(d.getUTCDate()).padStart(2,'0')+'('+w+') 추첨';}
 
 // 오늘의 한마디
 // PINNED: 특정 날짜에 직접 지정한 문구 (지정한 날은 아래 문구가 우선 표시됨)
@@ -289,6 +292,7 @@ function renderSets(){
 function renderLatest(){
   document.getElementById('ld').textContent=LOTTO_DATA.latestDraw;
   document.getElementById('ldno').textContent=LOTTO_DATA.latestDraw+'회';
+  document.getElementById('ldate').textContent=drawDate(LOTTO_DATA.latestDraw);
   const b=document.getElementById('latestballs');
   LOTTO_DATA.latestNumbers.forEach(n=>b.appendChild(makeBall(n)));
   const plus=document.createElement('span');plus.className='plus';plus.textContent='+';b.appendChild(plus);
