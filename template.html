@@ -3,36 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080b16">
+<meta name="theme-color" content="#f4f6fc">
 <title>리미의 로또 1등 기원</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" media="print" onload="this.media='all'">
 <style>
 :root{
-  --bg:#080b16;
-  --glass:rgba(255,255,255,.045);
-  --glass2:rgba(255,255,255,.075);
-  --stroke:rgba(255,255,255,.09);
-  --stroke2:rgba(255,255,255,.17);
-  --txt:#eaeefb;
-  --txt2:#a3adc9;
-  --txt3:#6e779a;
-  --a1:#8b7bff;
-  --a2:#38e0d8;
-  --a3:#ff74b1;
-  color-scheme:dark;
+  --bg:#f4f6fc;
+  --glass:rgba(255,255,255,.72);
+  --glass2:rgba(99,110,150,.09);
+  --stroke:rgba(20,30,60,.08);
+  --stroke2:rgba(20,30,60,.18);
+  --txt:#1b2238;
+  --txt2:#5a6480;
+  --txt3:#8b93a9;
+  --a1:#6d5cf0;
+  --a2:#0fb5ac;
+  --a3:#ee5a92;
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:
-  radial-gradient(58% 50% at 12% -5%,rgba(139,123,255,.28),transparent 70%),
-  radial-gradient(52% 44% at 102% 12%,rgba(56,224,216,.20),transparent 70%),
-  radial-gradient(50% 50% at 82% 108%,rgba(255,116,177,.18),transparent 70%),
+  radial-gradient(58% 50% at 12% -5%,rgba(139,123,255,.20),transparent 70%),
+  radial-gradient(52% 44% at 102% 12%,rgba(15,181,172,.16),transparent 70%),
+  radial-gradient(50% 50% at 82% 108%,rgba(255,116,177,.15),transparent 70%),
   var(--bg)}
 .wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px}
 
 /* glass card */
-.card{background:var(--glass);border:1px solid var(--stroke);border-radius:22px;padding:20px;margin-bottom:16px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);box-shadow:0 10px 34px rgba(0,0,0,.28)}
+.card{background:var(--glass);border:1px solid var(--stroke);border-radius:22px;padding:20px;margin-bottom:16px;backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%);box-shadow:0 10px 30px rgba(20,30,60,.07)}
 
 /* hero */
 .hero{padding:30px 26px;position:relative;overflow:hidden}
@@ -65,6 +65,11 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .sectitle{font-size:19px;font-weight:700;margin:30px 6px 13px;display:flex;align-items:center;gap:9px;letter-spacing:-.5px}
 .datepill{font-size:12px;font-weight:700;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);border-radius:999px;padding:5px 13px;margin-left:auto}
 
+/* daily quote */
+.quote{background:linear-gradient(120deg,rgba(109,92,240,.11),rgba(15,181,172,.11) 55%,rgba(238,90,146,.1));text-align:center;padding:22px 22px}
+.q-label{font-size:12.5px;font-weight:700;color:var(--a1);letter-spacing:.3px;margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:6px}
+.q-text{font-size:clamp(19px,4.8vw,25px);font-weight:800;letter-spacing:-.6px;line-height:1.4;background:linear-gradient(100deg,var(--a1),var(--a2) 58%,var(--a3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
 /* recommend set rows */
 .setrow{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
 .setrow+.setrow{margin-top:2px}
@@ -76,8 +81,8 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 /* buttons */
 .btnrow{display:flex;gap:11px;flex-wrap:wrap;margin-top:6px}
 button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 19px;font-weight:700;font-size:14px;transition:transform .13s ease,box-shadow .22s,background .2s}
-.primary{background:linear-gradient(100deg,var(--a1),var(--a2));color:#0a0c14;box-shadow:0 7px 22px rgba(56,224,216,.26)}
-.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(56,224,216,.36)}
+.primary{background:linear-gradient(100deg,var(--a1),var(--a2));color:#fff;box-shadow:0 7px 22px rgba(109,92,240,.3)}
+.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(109,92,240,.4)}
 .primary:active{transform:translateY(0)}
 .ghost{background:var(--glass2);color:var(--txt);border:1px solid var(--stroke)}
 .ghost:hover{background:rgba(255,255,255,.11);border-color:var(--stroke2)}
@@ -87,7 +92,7 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
 .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .tab{padding:8px 15px;border-radius:999px;background:var(--glass2);border:1px solid var(--stroke);color:var(--txt2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .tab:hover{color:var(--txt);border-color:var(--stroke2)}
-.tab.active{background:linear-gradient(100deg,var(--a1),var(--a2));color:#0a0c14;border-color:transparent}
+.tab.active{background:linear-gradient(100deg,var(--a1),var(--a2));color:#fff;border-color:transparent}
 
 /* frequency chart */
 .bars{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:8px}
@@ -105,8 +110,8 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
 .hc h4{margin:0 0 11px;font-size:13px;font-weight:600;color:var(--txt2)}
 
 /* disclaimer / footer */
-.disc{background:rgba(255,180,80,.08);border:1px solid rgba(255,180,80,.22);color:#ecc089;border-radius:18px;padding:15px 17px;font-size:12.5px;margin-top:22px;line-height:1.65}
-.disc b{color:#ffd39c}
+.disc{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.28);color:#946012;border-radius:18px;padding:15px 17px;font-size:12.5px;margin-top:22px;line-height:1.65}
+.disc b{color:#7a4e0c}
 .foot{font-size:12px;color:var(--txt3);margin-top:26px;line-height:1.75;text-align:center}
 </style>
 </head>
@@ -126,6 +131,11 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     <div class="stat"><div class="stat-k">최신 회차</div><div class="stat-v" id="stLatest">–</div></div>
     <div class="stat"><div class="stat-k">누적 분석 회차</div><div class="stat-v" id="stTotal">–</div></div>
     <div class="stat"><div class="stat-k">오늘의 추천</div><div class="stat-v">5세트</div></div>
+  </div>
+
+  <div class="card quote">
+    <div class="q-label">💬 오늘의 한마디</div>
+    <div class="q-text" id="dailyMsg">당신의 1등을 응원합니다</div>
   </div>
 
   <div class="sectitle">🎯 <span>오늘의 추천 5세트</span> <span class="datepill" id="today"></span></div>
@@ -221,6 +231,21 @@ const CATS=[
 let nonce=0;
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
+// 오늘의 한마디 (날짜별로 고정 순환)
+const MSGS=[
+  '당신의 1등을 응원합니다',
+  '오늘의 행운이 당신과 함께하길',
+  '기분 좋은 예감, 대박의 시작',
+  '작은 희망이 큰 행운이 됩니다',
+  '오늘은 왠지 좋은 일이 생길 것 같아요',
+  '행운은 준비된 사람에게 찾아옵니다',
+  '이번 주, 인생 역전의 주인공은 바로 당신'
+];
+function renderDailyMsg(){
+  const rng=hashStr('msg:'+todayStr());
+  document.getElementById('dailyMsg').textContent=MSGS[Math.floor(rng()*MSGS.length)];
+}
+
 function renderSets(){
   const seedBase=todayStr()+'#'+nonce;
   const card=document.getElementById('setcard');
@@ -294,7 +319,7 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
 document.getElementById('reroll').addEventListener('click',()=>{nonce++;renderSets();});
 document.getElementById('resetdaily').addEventListener('click',()=>{nonce=0;renderSets();});
 
-renderLatest();renderSets();renderBars();
+renderLatest();renderDailyMsg();renderSets();renderBars();
 </script>
 </body>
 </html>
