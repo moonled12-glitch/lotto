@@ -81,7 +81,7 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 /* daily quote */
 .quote{background:linear-gradient(120deg,rgba(109,92,240,.11),rgba(15,181,172,.11) 55%,rgba(238,90,146,.1));text-align:center;padding:22px 22px}
 .q-label{font-size:12.5px;font-weight:700;color:var(--a1);letter-spacing:.3px;margin-bottom:9px;display:flex;align-items:center;justify-content:center;gap:6px}
-.q-text{font-size:clamp(19px,4.8vw,25px);font-weight:800;letter-spacing:-.6px;line-height:1.4;background:linear-gradient(100deg,var(--a1),var(--a2) 58%,var(--a3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.q-text{font-size:clamp(19px,4.8vw,25px);font-weight:800;letter-spacing:-.6px;line-height:1.4;word-break:keep-all;background:linear-gradient(100deg,var(--a1),var(--a2) 58%,var(--a3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
 /* recommend set rows */
 .setrow{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
@@ -153,11 +153,11 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
 
   <div class="sectitle">🎯 <span>오늘의 추천 5세트</span> <span class="datepill" id="today"></span></div>
   <div class="card" id="setcard"></div>
+  <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.</div>
   <div class="btnrow">
     <button class="primary" id="reroll">🔄 새로 뽑기</button>
     <button class="ghost" id="resetdaily">오늘의 기본 세트</button>
   </div>
-  <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.</div>
 
   <div class="sectitle">📊 <span>번호 출현 빈도</span></div>
   <div class="card">
