@@ -60,7 +60,8 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   .card{padding:16px}
   .hero{padding:24px 20px}
   .setrow{padding:14px 2px;gap:10px}
-  .tag{min-width:100%}
+  .tag{min-width:100%;padding-right:74px}
+  .savebtn{position:absolute;top:12px;right:4px;margin:0}
   .balls{gap:6px}
   .ball{width:38px;height:38px;font-size:14px}
   /* 지난주 당첨번호: 항상 한 줄에 들어가도록 폭에 맞춰 작게 균등 배치 */
@@ -100,7 +101,7 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .q-text{font-size:clamp(19px,4.8vw,25px);font-weight:800;letter-spacing:-.6px;line-height:1.4;word-break:keep-all;background:linear-gradient(100deg,var(--a1),var(--a2) 58%,var(--a3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
 /* recommend set rows */
-.setrow{display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
+.setrow{position:relative;display:flex;align-items:center;gap:14px;padding:14px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
 .setrow+.setrow{margin-top:2px}
 .setrow:hover{background:var(--glass2)}
 .tag{min-width:132px;font-size:14px;font-weight:700}
