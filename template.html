@@ -62,6 +62,10 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   .tag{min-width:100%}
   .balls{gap:6px}
   .ball{width:38px;height:38px;font-size:14px}
+  /* 지난주 당첨번호: 항상 한 줄에 들어가도록 폭에 맞춰 작게 균등 배치 */
+  .latest .balls{flex-wrap:nowrap;gap:5px;width:100%}
+  .latest .ball{flex:1 1 0;min-width:0;width:auto;height:auto;aspect-ratio:1;max-width:40px;font-size:clamp(12px,3.6vw,15px)}
+  .latest .plus{flex:0 0 auto;font-size:14px;padding:0 1px}
   /* 추천 세트: 6개 번호를 화면 폭에 꽉 차게 균등 확대 */
   .setrow .balls{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;justify-items:center}
   .setrow .ball{width:100%;height:auto;aspect-ratio:1;max-width:56px;font-size:clamp(15px,4.4vw,19px)}
