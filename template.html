@@ -53,6 +53,19 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .ball:hover{transform:translateY(-3px) scale(1.05)}
 .ball.sm{width:34px;height:34px;font-size:13px}
 .plus{font-weight:800;color:var(--txt3);font-size:18px;padding:0 2px}
+@media(max-width:480px){
+  .wrap{padding:22px 14px 60px}
+  .card{padding:16px}
+  .hero{padding:24px 20px}
+  .setrow{padding:12px 4px;gap:10px}
+  .tag{min-width:100%}
+  .balls{gap:6px}
+  .ball{width:38px;height:38px;font-size:14px}
+}
+@media(max-width:360px){
+  .balls{gap:5px}
+  .ball{width:34px;height:34px;font-size:13px}
+}
 
 /* bento stats */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
