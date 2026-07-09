@@ -76,12 +76,19 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
   .setrow .ball{font-size:15px}
 }
 
-/* bento stats */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.stat{background:var(--glass);border:1px solid var(--stroke);border-radius:18px;padding:16px 18px;backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%)}
-.stat-k{font-size:12px;color:var(--txt2);margin-bottom:7px;font-weight:500}
-.stat-v{font-size:26px;font-weight:800;letter-spacing:-.6px;background:linear-gradient(100deg,var(--a2),var(--a1));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-@media(max-width:480px){.stat{padding:13px 14px}.stat-v{font-size:20px}.stat-k{font-size:11px}}
+/* 지난주 기본 세트 성적표 */
+.sc-title{font-size:16px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
+.sc-sub{font-size:12px;color:var(--txt2);margin-top:5px}
+.sc-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 14px}
+.sc-m{background:var(--glass2);border:1px solid var(--stroke);border-radius:14px;padding:13px 10px;text-align:center}
+.sc-k{font-size:11.5px;color:var(--txt2);margin-bottom:6px}
+.sc-v{font-size:22px;font-weight:800;letter-spacing:-.5px;background:linear-gradient(100deg,var(--a2),var(--a1));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sc-dist{display:flex;flex-wrap:wrap;gap:6px}
+.sc-chip{font-size:12px;font-weight:600;color:var(--txt2);background:var(--glass2);border:1px solid var(--stroke);border-radius:999px;padding:5px 11px}
+.sc-chip b{color:var(--txt);font-weight:800;margin-left:2px}
+.sc-chip.hot{background:linear-gradient(100deg,rgba(109,92,240,.15),rgba(15,181,172,.15));border-color:transparent;color:var(--a1)}
+.sc-chip.hot b{color:var(--a1)}
+@media(max-width:480px){.sc-metrics{gap:8px}.sc-v{font-size:19px}.sc-k{font-size:11px}.sc-m{padding:11px 6px}}
 
 /* section title */
 .sectitle{font-size:19px;font-weight:700;margin:30px 6px 13px;display:flex;align-items:center;gap:9px;letter-spacing:-.5px}
@@ -149,10 +156,16 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     </div>
   </div>
 
-  <div class="stats">
-    <div class="stat"><div class="stat-k">최신 회차</div><div class="stat-v" id="stLatest">–</div></div>
-    <div class="stat"><div class="stat-k">누적 분석 회차</div><div class="stat-v" id="stTotal">–</div></div>
-    <div class="stat"><div class="stat-k">오늘의 추천</div><div class="stat-v">5세트</div></div>
+  <div class="card scorecard">
+    <div class="sc-title">📈 <span>지난주 기본 세트 성적표</span></div>
+    <div class="sc-sub" id="scSub">계산 중…</div>
+    <div class="sc-metrics">
+      <div class="sc-m"><div class="sc-k">최고 일치</div><div class="sc-v" id="scBest">–</div></div>
+      <div class="sc-m"><div class="sc-k">3개 이상</div><div class="sc-v" id="scGe3">–</div></div>
+      <div class="sc-m"><div class="sc-k">검사한 세트</div><div class="sc-v" id="scTotal">–</div></div>
+    </div>
+    <div class="sc-dist" id="scDist"></div>
+    <div class="note" id="scNote"></div>
   </div>
 
   <div class="card quote">
@@ -228,14 +241,15 @@ function weightsFrom(freqArr, cands, power){
 }
 const ALL=Array.from({length:45},(_,i)=>i+1);
 
-function pickSet(cat, rng){
-  if(cat===0) return weightedPick(ALL, weightsFrom(LOTTO_DATA.f1y,ALL,2.2), 6, rng);
-  if(cat===1) return weightedPick(ALL, weightsFrom(LOTTO_DATA.f5y,ALL,3.0), 6, rng);
-  if(cat===2) return weightedPick(ALL, weightsFrom(LOTTO_DATA.fall,ALL,4.0), 6, rng);
+function pickSet(cat, rng, data){
+  data = data || LOTTO_DATA;
+  if(cat===0) return weightedPick(ALL, weightsFrom(data.f1y,ALL,2.2), 6, rng);
+  if(cat===1) return weightedPick(ALL, weightsFrom(data.f5y,ALL,3.0), 6, rng);
+  if(cat===2) return weightedPick(ALL, weightsFrom(data.fall,ALL,4.0), 6, rng);
   if(cat===3){ // 균형: 저구간3 + 고구간3, 전체빈도 가중
     const low=ALL.filter(n=>n<=22), high=ALL.filter(n=>n>=23);
-    const a=weightedPick(low, weightsFrom(LOTTO_DATA.fall,low,1.5),3,rng);
-    const b=weightedPick(high,weightsFrom(LOTTO_DATA.fall,high,1.5),3,rng);
+    const a=weightedPick(low, weightsFrom(data.fall,low,1.5),3,rng);
+    const b=weightedPick(high,weightsFrom(data.fall,high,1.5),3,rng);
     return a.concat(b).sort((x,y)=>x-y);
   }
   // 완전 랜덤
@@ -306,8 +320,6 @@ function renderLatest(){
   const plus=document.createElement('span');plus.className='plus';plus.textContent='+';b.appendChild(plus);
   b.appendChild(makeBall(LOTTO_DATA.latestBonus));
   document.getElementById('today').textContent=todayStr();
-  document.getElementById('stLatest').textContent=LOTTO_DATA.latestDraw+'회';
-  document.getElementById('stTotal').textContent=(LOTTO_DATA.totalDraws||LOTTO_DATA.latestDraw).toLocaleString()+'회';
   document.getElementById('foot').innerHTML='데이터 출처: 동행복권 공식 추첨결과(1~'+LOTTO_DATA.latestDraw+'회) · smok95/lotto, lottolyzer.com 집계 · 최신 회차 '+LOTTO_DATA.latestDraw+'회 반영';
 }
 
@@ -350,7 +362,51 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
 document.getElementById('reroll').addEventListener('click',()=>{nonce++;renderSets();});
 document.getElementById('resetdaily').addEventListener('click',()=>{nonce=0;renderSets();});
 
-renderLatest();renderDailyMsg();renderSets();renderBars();
+// ---- 지난주 기본 세트 성적표 ----
+function ymd(ms){const d=new Date(ms);return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0');}
+function snapshotFreq(draws, upTo){
+  const keys=Object.keys(draws).map(Number).filter(n=>n<=upTo).sort((a,b)=>a-b);
+  function freq(ks){const c=new Array(46).fill(0);ks.forEach(k=>draws[k].forEach(x=>c[x]++));return c.slice(1);}
+  const n1=Math.min(52,keys.length), n5=Math.min(260,keys.length);
+  return {f1y:freq(keys.slice(-n1)), f5y:freq(keys.slice(-n5)), fall:freq(keys)};
+}
+function renderScore(){
+  const N=LOTTO_DATA.latestDraw, win=LOTTO_DATA.latestNumbers;
+  fetch('draws.json').then(r=>r.json()).then(draws=>{
+    const snap=snapshotFreq(draws, N-1);            // 추첨 직전(1~N-1) 통계로 재현
+    const winSet=new Set(win);
+    const S=Date.UTC(2002,11,7)+(N-1)*604800000;    // N회차(토) 자정 UTC
+    const dist=[0,0,0,0,0,0,0]; let best=0, total=0, ge3=0;
+    for(let i=0;i<7;i++){                            // 추첨일 포함 직전 7일
+      const ds=ymd(S-i*86400000);
+      for(let c=0;c<5;c++){
+        const set=pickSet(c, hashStr(ds+'#0:'+c), snap);
+        let m=0; set.forEach(n=>{if(winSet.has(n))m++;});
+        dist[m]++; total++; if(m>best)best=m; if(m>=3)ge3++;
+      }
+    }
+    document.getElementById('scBest').textContent=best+'개';
+    document.getElementById('scGe3').textContent=ge3+'세트';
+    document.getElementById('scTotal').textContent=total+'세트';
+    document.getElementById('scSub').textContent=N+'회('+drawDate(N).replace(' 추첨','')+') 당첨번호 기준 · 최근 7일 × 5세트';
+    const dc=document.getElementById('scDist'); dc.innerHTML='';
+    for(let m=6;m>=0;m--){ if(dist[m]===0) continue;
+      const chip=document.createElement('span');
+      chip.className='sc-chip'+(m>=3?' hot':'');
+      chip.innerHTML=m+'개 일치<b>'+dist[m]+'세트</b>';
+      dc.appendChild(chip);
+    }
+    const rank={6:'1등',5:'3등',4:'4등',3:'5등'};
+    document.getElementById('scNote').textContent = best>=3
+      ? '🎉 최고 '+best+'개 일치 — '+rank[best]+' 등수에 해당하는 조합이 있었어요! (재미로 보는 결과)'
+      : '이번 주엔 3개 이상 맞은 세트가 없었어요. 다음 주에 다시 도전! 🍀';
+  }).catch(()=>{
+    document.getElementById('scSub').textContent='';
+    document.getElementById('scNote').textContent='당첨 이력(draws.json)을 불러오지 못했어요.';
+  });
+}
+
+renderLatest();renderDailyMsg();renderSets();renderBars();renderScore();
 </script>
 </body>
 </html>
