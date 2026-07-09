@@ -122,6 +122,8 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 .delbtn{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:transparent;border:1px solid var(--stroke);color:var(--txt3);font-size:13px;line-height:1;padding:0;cursor:pointer;transition:all .15s}
 .delbtn:hover{color:#e24b4a;border-color:#e24b4a}
 .saved-empty{font-size:13px;color:var(--txt3);text-align:center;padding:10px 4px}
+.saved-hint{font-size:12.5px;font-weight:600;color:#c0392b;text-align:center;margin:-6px 0 10px;display:none}
+.saved-hint.show{display:block}
 
 /* buttons */
 .btnrow{display:flex;gap:11px;flex-wrap:wrap;margin:10px 0 18px}
@@ -191,6 +193,7 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
 
   <div class="sectitle">⭐ <span>내가 저장한 번호</span> <span class="datepill" id="savedCount"></span></div>
   <div class="card" id="savedCard"></div>
+  <div class="saved-hint" id="savedHint"></div>
 
   <div class="sectitle">📈 <span>지난주 기본 세트 성적표</span></div>
   <div class="card scorecard">
@@ -332,7 +335,8 @@ function renderSets(){
     save.className='savebtn';
     setSaveBtn(save,nums);
     save.addEventListener('click',()=>{
-      if(isSaved(nums)) removeSaved(nums.join(',')); else saveSet(nums,CATS[c].t);
+      if(isSaved(nums)){ removeSaved(nums.join(',')); }
+      else if(!saveSet(nums,CATS[c].t)){ flashHint('저장은 최대 '+MAX_SAVED+'개까지 가능해요. 기존 번호를 삭제한 뒤 추가해 주세요.'); return; }
       setSaveBtn(save,nums); renderSaved();
     });
     row.appendChild(tag); row.appendChild(balls); row.appendChild(save);
@@ -438,15 +442,17 @@ function renderScore(){
 
 // ---- 내가 저장한 번호 (브라우저 localStorage) ----
 const LS_KEY='savedLottoSets';
+const MAX_SAVED=10;
 function loadSaved(){try{return JSON.parse(localStorage.getItem(LS_KEY))||[];}catch(e){return [];}}
 function storeSaved(a){try{localStorage.setItem(LS_KEY,JSON.stringify(a));}catch(e){}}
 function isSaved(nums){const k=nums.join(',');return loadSaved().some(s=>s.nums.join(',')===k);}
-function saveSet(nums,label){const a=loadSaved();const k=nums.join(',');if(a.some(s=>s.nums.join(',')===k))return;a.unshift({nums:nums.slice(),label:label||'',date:todayStr()});storeSaved(a);}
+function saveSet(nums,label){const a=loadSaved();const k=nums.join(',');if(a.some(s=>s.nums.join(',')===k))return true;if(a.length>=MAX_SAVED)return false;a.unshift({nums:nums.slice(),label:label||'',date:todayStr()});storeSaved(a);return true;}
 function removeSaved(k){storeSaved(loadSaved().filter(s=>s.nums.join(',')!==k));}
 function setSaveBtn(btn,nums){const on=isSaved(nums);btn.classList.toggle('on',on);btn.textContent=on?'★ 저장됨':'☆ 저장';}
+function flashHint(msg){const h=document.getElementById('savedHint');if(!h)return;h.textContent=msg;h.classList.add('show');clearTimeout(flashHint._t);flashHint._t=setTimeout(()=>h.classList.remove('show'),2800);}
 function renderSaved(){
   const list=loadSaved();
-  document.getElementById('savedCount').textContent=list.length+'개';
+  document.getElementById('savedCount').textContent=list.length+' / '+MAX_SAVED;
   const card=document.getElementById('savedCard');
   if(!list.length){card.innerHTML='<div class="saved-empty">아직 저장한 번호가 없어요. 마음에 드는 세트의 ‘☆ 저장’을 눌러보세요.</div>';return;}
   card.innerHTML='';
