@@ -78,8 +78,7 @@ h1 .grad{background:linear-gradient(100deg,var(--a1),var(--a2) 52%,var(--a3));ba
 }
 
 /* 지난주 기본 세트 성적표 */
-.sc-title{font-size:16px;font-weight:800;letter-spacing:-.4px;display:flex;align-items:center;gap:8px}
-.sc-sub{font-size:12px;color:var(--txt2);margin-top:5px}
+.sc-sub{font-size:12px;color:var(--txt2)}
 .sc-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 14px}
 .sc-m{background:var(--glass2);border:1px solid var(--stroke);border-radius:14px;padding:13px 10px;text-align:center}
 .sc-k{font-size:11.5px;color:var(--txt2);margin-bottom:6px}
@@ -161,18 +160,6 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     </div>
   </div>
 
-  <div class="card scorecard">
-    <div class="sc-title">📈 <span>지난주 기본 세트 성적표</span></div>
-    <div class="sc-sub" id="scSub">계산 중…</div>
-    <div class="sc-metrics">
-      <div class="sc-m"><div class="sc-k">최고 일치</div><div class="sc-v" id="scBest">–</div></div>
-      <div class="sc-m"><div class="sc-k">3개 이상</div><div class="sc-v" id="scGe3">–</div></div>
-      <div class="sc-m"><div class="sc-k">검사한 세트</div><div class="sc-v" id="scTotal">–</div></div>
-    </div>
-    <div class="sc-dist" id="scDist"></div>
-    <div class="note" id="scNote"></div>
-  </div>
-
   <div class="card quote">
     <div class="q-label">💬 오늘의 한마디</div>
     <div class="q-text" id="dailyMsg">당신의 1등을 응원합니다</div>
@@ -185,6 +172,18 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
   </div>
   <div class="card" id="setcard"></div>
   <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.</div>
+
+  <div class="sectitle">📈 <span>지난주 기본 세트 성적표</span></div>
+  <div class="card scorecard">
+    <div class="sc-sub" id="scSub">계산 중…</div>
+    <div class="sc-metrics">
+      <div class="sc-m"><div class="sc-k">최고 일치</div><div class="sc-v" id="scBest">–</div></div>
+      <div class="sc-m"><div class="sc-k">3개 이상</div><div class="sc-v" id="scGe3">–</div></div>
+      <div class="sc-m"><div class="sc-k">검사한 세트</div><div class="sc-v" id="scTotal">–</div></div>
+    </div>
+    <div class="sc-dist" id="scDist"></div>
+    <div class="note" id="scNote"></div>
+  </div>
 
   <div class="sectitle">📊 <span>번호 출현 빈도</span></div>
   <div class="card">
