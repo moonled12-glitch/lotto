@@ -229,7 +229,17 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
   <div class="foot" id="foot"></div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBctsve9b54aTK-aG0otzqTWcSnpB9CnQM",
+  authDomain: "lotto-902e8.firebaseapp.com",
+  projectId: "lotto-902e8",
+  storageBucket: "lotto-902e8.firebasestorage.app",
+  messagingSenderId: "886122000648",
+  appId: "1:886122000648:web:0b377aa50fd0df12263cbd"
+};
 const LOTTO_DATA = __LOTTO_DATA__;
 
 // ---- helpers ----
@@ -455,49 +465,54 @@ function renderSaved(){
   });
 }
 
-// ---- 댓글 (브라우저 localStorage, 최대 30개 · 오래된 것 자동 삭제) ----
-const CMT_KEY='lottoComments';
+// ---- 댓글 (Firebase Firestore · 모든 방문자 실시간 공유 · 최신 30개 표시) ----
 const CMT_MAX=30;
-function loadCmts(){try{return JSON.parse(localStorage.getItem(CMT_KEY))||[];}catch(e){return [];}}
-function storeCmts(a){try{localStorage.setItem(CMT_KEY,JSON.stringify(a));}catch(e){}}
-function cmtNow(){const d=new Date();const p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());}
-function addCmt(name,text){
-  let a=loadCmts();
-  a.unshift({name:(name||'').trim().slice(0,12), text:text.trim().slice(0,200), t:cmtNow(), id:(a[0]?a[0].id+1:1)});
-  if(a.length>CMT_MAX) a=a.slice(0,CMT_MAX);   // 오래된(뒤쪽) 댓글 자동 삭제
-  storeCmts(a);
-}
-function delCmt(id){storeCmts(loadCmts().filter(c=>c.id!==id));}
-function renderComments(){
-  const list=loadCmts();
-  document.getElementById('cmtCount').textContent=list.length+' / '+CMT_MAX;
+let cmtDB=null;
+function fmtTs(ts){ if(!ts||!ts.toDate) return '방금'; const d=ts.toDate();const p=n=>String(n).padStart(2,'0');return (d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+function renderComments(snap){
   const box=document.getElementById('cmtList');
-  if(!list.length){box.innerHTML='<div class="cmt-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</div>';return;}
+  document.getElementById('cmtCount').textContent=snap.size+' / '+CMT_MAX;
+  if(snap.empty){box.innerHTML='<div class="cmt-empty">아직 댓글이 없어요. 첫 댓글을 남겨보세요!</div>';return;}
   box.innerHTML='';
-  list.forEach(c=>{
+  snap.forEach(doc=>{
+    const c=doc.data();
     const el=document.createElement('div');el.className='cmt';
     const head=document.createElement('div');head.className='cmt-head';
-    const au=document.createElement('span');au.className='cmt-author';au.textContent=c.name||'익명';
-    const tm=document.createElement('span');tm.className='cmt-time';tm.textContent=c.t||'';
-    const del=document.createElement('button');del.className='cmt-del';del.textContent='삭제';del.title='삭제';
-    del.addEventListener('click',()=>{delCmt(c.id);renderComments();});
-    head.appendChild(au);head.appendChild(tm);head.appendChild(del);
+    const au=document.createElement('span');au.className='cmt-author';au.textContent=(c.name&&c.name.trim())?c.name:'익명';
+    const tm=document.createElement('span');tm.className='cmt-time';tm.textContent=fmtTs(c.ts);
+    head.appendChild(au);head.appendChild(tm);
     const body=document.createElement('div');body.className='cmt-body';body.textContent=c.text;
     el.appendChild(head);el.appendChild(body);
     box.appendChild(el);
   });
 }
+function initComments(){
+  const box=document.getElementById('cmtList');
+  try{
+    if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    cmtDB=firebase.firestore();
+    cmtDB.collection('comments').orderBy('ts','desc').limit(CMT_MAX).onSnapshot(
+      snap=>renderComments(snap),
+      err=>{box.innerHTML='<div class="cmt-empty">댓글을 불러오지 못했어요. 잠시 후 새로고침 해주세요.</div>';}
+    );
+  }catch(e){ box.innerHTML='<div class="cmt-empty">댓글 기능을 불러오지 못했어요.</div>'; }
+}
 document.getElementById('cmtForm').addEventListener('submit',function(e){
   e.preventDefault();
   const nameEl=document.getElementById('cmtName'), textEl=document.getElementById('cmtText');
   const text=textEl.value.trim();
-  if(!text) return;
-  addCmt(nameEl.value, text);
-  textEl.value=''; nameEl.value='';
-  renderComments();
+  if(!text || !cmtDB) return;
+  const btn=this.querySelector('button[type=submit]'); btn.disabled=true;
+  cmtDB.collection('comments').add({
+    name:nameEl.value.trim().slice(0,12),
+    text:text.slice(0,200),
+    ts:firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{textEl.value='';nameEl.value='';})
+    .catch(()=>{alert('댓글 등록에 실패했어요. 잠시 후 다시 시도해주세요.');})
+    .finally(()=>{btn.disabled=false;});
 });
 
-renderLatest();renderDailyMsg();renderSets();renderScore();renderSaved();renderComments();
+renderLatest();renderDailyMsg();renderSets();renderScore();renderSaved();initComments();
 </script>
 </body>
 </html>
