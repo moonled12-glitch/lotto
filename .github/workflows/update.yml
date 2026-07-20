@@ -2,8 +2,9 @@ name: Update lotto data
 
 on:
   schedule:
-    # 매주 토요일 17:00 UTC = 일요일 02:00 KST (토요일 추첨 뒤)
-    - cron: "0 17 * * 6"
+    # 매일 17:00 UTC = 다음날 02:00 KST 실행
+    # (토요일 추첨 반영 + 일시적 실패 시 다음날 자동 재시도)
+    - cron: "0 17 * * *"
   workflow_dispatch: {}   # 수동 실행 버튼
 
 permissions:
