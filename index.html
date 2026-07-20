@@ -191,7 +191,7 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
     <button class="primary" id="reroll">🔄 새로 뽑기</button>
   </div>
   <div class="card" id="setcard"></div>
-  <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.</div>
+  <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.<br>💡 5세트(30개)는 <b>서로 겹치지 않는 번호</b>로 구성되어 커버리지를 최대화하고, 생일 쏠림·연속수 같은 <b>인기 패턴을 자동 회피</b>해 당첨 시 분배 기대값을 높입니다.</div>
 
   <div class="sectitle">⭐ <span>내가 저장한 번호</span> <span class="datepill" id="savedCount"></span></div>
   <div class="card" id="savedCard"></div>
@@ -278,19 +278,50 @@ function weightsFrom(freqArr, cands, power){
 }
 const ALL=Array.from({length:45},(_,i)=>i+1);
 
-function pickSet(cat, rng, data){
+function pickSet(cat, rng, data, avail){
   data = data || LOTTO_DATA;
-  if(cat===0) return weightedPick(ALL, weightsFrom(data.f1y,ALL,2.2), 6, rng);
-  if(cat===1) return weightedPick(ALL, weightsFrom(data.f5y,ALL,3.0), 6, rng);
-  if(cat===2) return weightedPick(ALL, weightsFrom(data.fall,ALL,4.0), 6, rng);
+  avail = avail || ALL;
+  if(cat===0) return weightedPick(avail, weightsFrom(data.f1y,avail,2.2), 6, rng);
+  if(cat===1) return weightedPick(avail, weightsFrom(data.f5y,avail,3.0), 6, rng);
+  if(cat===2) return weightedPick(avail, weightsFrom(data.fall,avail,4.0), 6, rng);
   if(cat===3){ // 균형: 저구간3 + 고구간3, 전체빈도 가중
-    const low=ALL.filter(n=>n<=22), high=ALL.filter(n=>n>=23);
-    const a=weightedPick(low, weightsFrom(data.fall,low,1.5),3,rng);
-    const b=weightedPick(high,weightsFrom(data.fall,high,1.5),3,rng);
-    return a.concat(b).sort((x,y)=>x-y);
+    const low=avail.filter(n=>n<=22), high=avail.filter(n=>n>=23);
+    if(low.length>=3 && high.length>=3){
+      const a=weightedPick(low, weightsFrom(data.fall,low,1.5),3,rng);
+      const b=weightedPick(high,weightsFrom(data.fall,high,1.5),3,rng);
+      return a.concat(b).sort((x,y)=>x-y);
+    }
+    return weightedPick(avail, weightsFrom(data.fall,avail,1.5), 6, rng);
   }
   // 완전 랜덤
-  return weightedPick(ALL, ALL.map(()=>1), 6, rng);
+  return weightedPick(avail, avail.map(()=>1), 6, rng);
+}
+
+// 인기 패턴 회피: 남들이 많이 찍는 조합을 피해 당첨 시 분배액 기대값을 높임
+function badPattern(nums){
+  // 생일 범위(1~31) 쏠림: 5개 이상이면 회피
+  if(nums.filter(n=>n<=31).length>=5) return true;
+  // 3개 이상 연속 수열(예: 7,8,9) 회피
+  let run=1;
+  for(let i=1;i<nums.length;i++){
+    if(nums[i]===nums[i-1]+1){run++;if(run>=3)return true;}
+    else run=1;
+  }
+  return false;
+}
+
+// 풀커버 구조: 5세트(30개)가 서로 겹치지 않게 생성 → 45개 중 30개 커버
+function pickDailySets(seedBase, data){
+  const used=new Set(), sets=[];
+  for(let c=0;c<5;c++){
+    const rng=hashStr(seedBase+':'+c);
+    const avail=ALL.filter(n=>!used.has(n));
+    let nums=pickSet(c,rng,data,avail);
+    for(let t=0;t<24 && badPattern(nums);t++) nums=pickSet(c,rng,data,avail);
+    nums.forEach(n=>used.add(n));
+    sets.push(nums);
+  }
+  return sets;
 }
 
 const CATS=[
@@ -343,9 +374,9 @@ function renderSets(animate){
   const card=document.getElementById('setcard');
   card.innerHTML='';
   const anims=[];
+  const daySets=pickDailySets(seedBase);
   for(let c=0;c<5;c++){
-    const rng=hashStr(seedBase+':'+c);
-    const nums=pickSet(c,rng);
+    const nums=daySets[c];
     const row=document.createElement('div');
     row.className='setrow c'+c;
     const tag=document.createElement('div');
@@ -407,11 +438,11 @@ function renderScore(){
     const dist=[0,0,0,0,0,0,0]; let best=0, total=0, ge3=0;
     for(let i=0;i<7;i++){                            // 추첨일 포함 직전 7일
       const ds=ymd(S-i*86400000);
-      for(let c=0;c<5;c++){
-        const set=pickSet(c, hashStr(ds+'#0:'+c), snap);
+      const daySets=pickDailySets(ds+'#0', snap);
+      daySets.forEach(set=>{
         let m=0; set.forEach(n=>{if(winSet.has(n))m++;});
         dist[m]++; total++; if(m>best)best=m; if(m>=3)ge3++;
-      }
+      });
     }
     document.getElementById('scBest').textContent=best+'개';
     document.getElementById('scGe3').textContent=ge3+'세트';
