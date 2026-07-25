@@ -127,6 +127,19 @@ button:disabled{opacity:.55;cursor:default}
 .saved-empty{font-size:13px;color:var(--txt3);text-align:center;padding:10px 4px}
 .saved-hint{font-size:12.5px;font-weight:600;color:#c0392b;text-align:center;margin:-6px 0 10px;display:none}
 .saved-hint.show{display:block}
+/* 직접 번호 선택 */
+.pickcard{padding:14px 16px}
+.pick-toggle{width:100%;text-align:center}
+.pick-panel{margin-top:14px}
+.pick-grid{display:grid;grid-template-columns:repeat(9,1fr);gap:6px}
+.pick-ball{width:100%;aspect-ratio:1;border-radius:50%;border:1px solid var(--stroke);background:var(--glass2);color:var(--txt2);font:inherit;font-size:13px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;transition:all .12s}
+.pick-ball:hover{border-color:var(--stroke2);color:var(--txt)}
+.pick-ball.sel{color:#14151d;border-color:transparent;box-shadow:inset 0 2px 4px rgba(255,255,255,.45),inset 0 -3px 5px rgba(0,0,0,.2);transform:scale(1.06)}
+.pick-actions{display:flex;align-items:center;gap:10px;margin-top:14px}
+.pick-status{font-size:13px;font-weight:700;color:var(--txt2)}
+.pick-actions .primary{margin-left:auto;padding:9px 18px}
+.pick-actions .ghost{padding:9px 14px}
+@media(max-width:480px){.pick-grid{gap:4px}.pick-ball{font-size:11.5px}}
 /* 댓글 */
 .cmt-form{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
 .cmt-name,.cmt-text{width:100%;font:inherit;color:var(--txt);background:var(--glass2);border:1px solid var(--stroke);border-radius:12px;padding:11px 13px}
@@ -194,6 +207,17 @@ button{font:inherit;cursor:pointer;border:none;border-radius:13px;padding:12px 1
   <div class="note">기본 세트는 날짜별로 고정되어 매일 자동으로 바뀝니다. ‘새로 뽑기’를 누르면 같은 기준으로 새 조합을 뽑습니다.<br>💡 5세트(30개)는 <b>서로 겹치지 않는 번호</b>로 구성되어 커버리지를 최대화하고, 생일 쏠림·연속수 같은 <b>인기 패턴을 자동 회피</b>해 당첨 시 분배 기대값을 높입니다.</div>
 
   <div class="sectitle">⭐ <span>내가 저장한 번호</span> <span class="datepill" id="savedCount"></span></div>
+  <div class="card pickcard">
+    <button type="button" class="ghost pick-toggle" id="pickToggle">➕ 직접 번호 만들기</button>
+    <div class="pick-panel" id="pickPanel" hidden>
+      <div class="pick-grid" id="pickGrid"></div>
+      <div class="pick-actions">
+        <span class="pick-status" id="pickStatus">0 / 6 선택</span>
+        <button type="button" class="ghost" id="pickClear">초기화</button>
+        <button type="button" class="primary" id="pickSave" disabled>저장</button>
+      </div>
+    </div>
+  </div>
   <div class="card" id="savedCard"></div>
   <div class="saved-hint" id="savedHint"></div>
 
@@ -496,6 +520,46 @@ function renderSaved(){
   });
 }
 
+// ---- 직접 번호 만들기 (1~45 중 6개 선택 후 저장) ----
+const pickSel=new Set();
+function updatePickUI(){
+  document.getElementById('pickStatus').textContent=pickSel.size+' / 6 선택';
+  document.getElementById('pickSave').disabled=pickSel.size!==6;
+}
+function clearPick(){
+  pickSel.clear();
+  document.querySelectorAll('.pick-ball.sel').forEach(b=>{b.classList.remove('sel');b.style.background='';});
+  updatePickUI();
+}
+function initPicker(){
+  const grid=document.getElementById('pickGrid');
+  for(let n=1;n<=45;n++){
+    const b=document.createElement('button');
+    b.type='button';b.className='pick-ball';b.textContent=n;
+    b.addEventListener('click',()=>{
+      if(pickSel.has(n)){pickSel.delete(n);b.classList.remove('sel');b.style.background='';}
+      else{
+        if(pickSel.size>=6){flashHint('번호는 6개까지만 선택할 수 있어요.');return;}
+        pickSel.add(n);b.classList.add('sel');b.style.background=ballColor(n);
+      }
+      updatePickUI();
+    });
+    grid.appendChild(b);
+  }
+  document.getElementById('pickToggle').addEventListener('click',()=>{
+    const p=document.getElementById('pickPanel');p.hidden=!p.hidden;
+    document.getElementById('pickToggle').textContent=p.hidden?'➕ 직접 번호 만들기':'▲ 접기';
+  });
+  document.getElementById('pickClear').addEventListener('click',clearPick);
+  document.getElementById('pickSave').addEventListener('click',()=>{
+    if(pickSel.size!==6)return;
+    const nums=[...pickSel].sort((a,b)=>a-b);
+    if(isSaved(nums)){flashHint('이미 저장된 번호 조합이에요.');return;}
+    if(!saveSet(nums,'직접 선택')){flashHint('저장은 최대 '+MAX_SAVED+'개까지 가능해요. 기존 번호를 삭제한 뒤 추가해 주세요.');return;}
+    clearPick();renderSaved();renderSets();
+  });
+}
+
 // ---- 댓글 (Firebase Firestore · 모든 방문자 실시간 공유 · 최신 30개 표시) ----
 const CMT_MAX=30;
 let cmtDB=null;
@@ -543,7 +607,7 @@ document.getElementById('cmtForm').addEventListener('submit',function(e){
     .finally(()=>{btn.disabled=false;});
 });
 
-renderLatest();renderDailyMsg();renderSets();renderScore();renderSaved();initComments();
+renderLatest();renderDailyMsg();renderSets();renderScore();renderSaved();initPicker();initComments();
 </script>
 </body>
 </html>
